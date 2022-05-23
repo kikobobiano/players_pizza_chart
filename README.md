@@ -1,2 +1,2 @@
 # players_pizza_chart
-Pizza chart for +players
+Pizza chart for players
