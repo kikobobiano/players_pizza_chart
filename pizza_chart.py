@@ -111,7 +111,7 @@ def get_player_data(url):
     elif(position == 'Att Mid / Wingers'):
         atack = constants.WINGERS_ATTACK
         possession = constants.WINGERS_POSSESSION
-        defense = constants.WINGERS_ATTACK
+        defense = constants.WINGERS_DEFENSE
         
         for i in constants.WINGERS:
             metric_names.append(m_names[i])
