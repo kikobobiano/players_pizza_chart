@@ -5,7 +5,6 @@ import constants
 
 from mplsoccer import PyPizza, add_image, FontManager
 from bs4 import BeautifulSoup
-from math import pi
 
 #constants
 metric_names = []
@@ -57,8 +56,9 @@ def get_player_data(url):
     name = names[7]
     
     #get position
-    positions = [element.text for element in soup.find_all("a", class_="sr_preset")]
-    position = positions[1]
+    positions = [element.text for element in soup.find_all("a", class_="sr_preset")
+                            if element.find_parent(class_="current") ]
+    position = positions[0][4:]
 
     #get league
     league = soup.find_all("div", class_="section_heading_text")[0].findAll('li')[0].text
@@ -98,7 +98,7 @@ def get_player_data(url):
         m_percentile_values = m_percentile_values.replace(content, '')
     m_per90_values = Convert(m_per90_values)
     m_percentile_values = Convert(m_percentile_values)
-
+    
     #populate global data
     if(position == 'Midfielders'):
         atack = constants.MIDFIELDERS_ATTACK
@@ -108,8 +108,48 @@ def get_player_data(url):
         for i in constants.MIDFIELDERS:
             metric_names.append(m_names[i])
             metric_percentile_values.append(int(m_percentile_values[i]))
+    elif(position == 'Att Mid / Wingers'):
+        atack = constants.WINGERS_ATTACK
+        possession = constants.WINGERS_POSSESSION
+        defense = constants.WINGERS_ATTACK
+        
+        for i in constants.WINGERS:
+            metric_names.append(m_names[i])
+            metric_percentile_values.append(int(m_percentile_values[i]))
+    elif(position == 'Goalkeepers'):
+        atack = constants.MIDFIELDERS_ATTACK
+        possession = constants.MIDFIELDERS_POSSESSION
+        defense = constants.MIDFIELDERS_DEFENSE
+        
+        for i in constants.MIDFIELDERS:
+            metric_names.append(m_names[i])
+            metric_percentile_values.append(int(m_percentile_values[i]))
+    elif(position == 'Center Backs'):
+        atack = constants.CENTERBACKS_ATTACK
+        possession = constants.CENTERBACKS_POSSESSION
+        defense = constants.CENTERBACKS_DEFENSE
+        
+        for i in constants.CENTERBACKS:
+            metric_names.append(m_names[i])
+            metric_percentile_values.append(int(m_percentile_values[i]))
+    elif(position == 'Fullbacks'):
+        atack = constants.FULLBACKS_ATTACK
+        possession = constants.FULLBACKS_POSSESSION
+        defense = constants.FULLBACKS_DEFENSE
+        
+        for i in constants.FULLBACKS:
+            metric_names.append(m_names[i])
+            metric_percentile_values.append(int(m_percentile_values[i]))
+    elif(position == 'Forwards'):
+        atack = constants.FORWARDS_ATTACK
+        possession = constants.FORWARDS_POSSESSION
+        defense = constants.FORWARDS_DEFENSE
+        
+        for i in constants.FORWARDS:
+            metric_names.append(m_names[i])
+            metric_percentile_values.append(int(m_percentile_values[i]))
     else:
-        print("Error")
+        print("Player position error")
         exit()
         
     return
@@ -222,7 +262,8 @@ def make_chart(params_name, params_values, attack, possession, defense, title, s
         ),
     ])
     
-    plt.show()
+    filename = title.replace(" ", "")
+    fig.savefig("charts/" + filename + ".png",pad_inches=10)
     
 if __name__ == "__main__":
     args = sys.argv
